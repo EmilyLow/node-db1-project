@@ -43,7 +43,42 @@ server.get('/accounts', (req, res) => {
 
 server.put("/accounts/:id", async (req, res, next) => {
 
-    
+    try {
+        const payload = {
+            name: req.body.name,
+            budget: req.body.budget
+
+        }
+
+        if(!payload.name || !payload.budget) {
+            res.status(400).json({message: "Inclulde name and budget"})
+        }
+
+        //? Anything wrong with not assinging this to anything?
+        await db("accounts").where("id", req.params.id).update(payload);
+        res.status(201).json("Successfully changed");
+
+    } catch (err) {
+        next(err);
+    }
+
 })
+
+
+server.delete("/accounts/:id", async (req, res, next) => {
+
+    try {
+        
+
+       
+        await db("accounts").where("id", req.params.id).del();
+        res.status(201).json("Successfully deleted");
+
+    } catch (err) {
+        next(err);
+    }
+
+})
+
 
 module.exports = server;
